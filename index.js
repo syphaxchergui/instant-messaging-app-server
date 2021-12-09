@@ -18,11 +18,10 @@ const io = require("socket.io")(server, {
 });
 
 io.on("connection", (socket) => {
-  console.log(socket.id);
   socket.on("join_room", (data) => {
-    console.log(data);
     socket.join(data.roomId);
     console.log("User joined Room : " + JSON.stringify(data));
+    socket.to(data.roomId).emit("user_joined_room", data);
   });
 
   socket.on("send_msg", (data) => {
