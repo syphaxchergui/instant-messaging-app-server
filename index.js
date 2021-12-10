@@ -17,9 +17,14 @@ const io = require("socket.io")(server, {
   },
 });
 
+var sockets = [];
+
 io.on("connection", (socket) => {
+  const id = socket.id;
+
   socket.on("join_room", (data) => {
     socket.join(data.roomId);
+    sockets[id] = data;
     console.log("User joined Room : " + JSON.stringify(data));
     socket.to(data.roomId).emit("user_joined_room", data);
   });
@@ -30,6 +35,8 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
-    console.log("USER DISCONNECTED");
+    console.log("USER DISCONNECTED ");
+    console.log(sockets[id].roomId);
+    //socket.to(socket[id].roomId).emit("user_unjoined_room", socket[id]);
   });
 });
